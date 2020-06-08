@@ -18,6 +18,7 @@
 #include "cereal/gen/cpp/car.capnp.h"
 
 #include "common/util.h"
+#include "common/messaging.h"
 #include "common/params.h"
 #include "common/swaglog.h"
 #include "common/timing.h"
@@ -611,11 +612,6 @@ void *can_send_thread(void *crap) {
     }
   }
 
-  // run as fast as messages come in
-  while (!do_exit) {
-    can_send(subscriber);
-  }
-
   delete subscriber;
   delete context;
 
@@ -881,7 +877,6 @@ int main() {
   LOG("set priority returns %d", err);
   err = set_core_affinity(3);
   LOG("set affinity returns %d", err);
-
   // check the environment
   if (getenv("STARTED")) {
     spoofing_started = true;
